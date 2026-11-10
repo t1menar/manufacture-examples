@@ -1,0 +1,42 @@
+# Hello World: four modules append to one string, the last one prints it.
+#   hello-init (source) -> "" -> hello-hello -> "hello" -> hello-world -> "hello world"
+#   -> hello-exclaim -> "hello world!" (printed to the container's stdout)
+# Images are built by `make -C hello-world images` (tag 0.1.0, registry localhost:5001).
+apiVersion: manufacture.dev/v1
+kind: Module
+metadata: {name: hello-init, labels: {project: hello}}
+spec: {image: localhost:5001/mf-hello-init:0.1.0, replicas: 1}
+---
+apiVersion: manufacture.dev/v1
+kind: Module
+metadata: {name: hello-hello, labels: {project: hello}}
+spec: {image: localhost:5001/mf-hello-hello:0.1.0, replicas: 2} # 2 replicas to show load sharing
+---
+apiVersion: manufacture.dev/v1
+kind: Module
+metadata: {name: hello-world, labels: {project: hello}}
+spec: {image: localhost:5001/mf-hello-world:0.1.0, replicas: 1}
+---
+apiVersion: manufacture.dev/v1
+kind: Module
+metadata: {name: hello-exclaim, labels: {project: hello}}
+spec: {image: localhost:5001/mf-hello-exclaim:0.1.0, replicas: 1}
+---
+apiVersion: manufacture.dev/v1
+kind: Pipeline
+metadata: {name: hello-world, labels: {project: hello}}
+spec:
+  trigger: {source: hello-init} # the run is started by module 1
+  concurrency: {max_runs: 10}
+  context:
+    schema:
+      type: object
+      properties: {text: {type: string}}
+      required: [text]
+  stages:
+    - name: hello
+      step: {id: hello, module: hello-hello, timeout: 30s, retry: {max_attempts: 3}}
+    - name: world
+      step: {id: world, module: hello-world, timeout: 30s}
+    - name: exclaim
+      step: {id: exclaim, module: hello-exclaim, timeout: 30s}
