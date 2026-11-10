@@ -4,7 +4,7 @@ UV ?= uv
 GOBIN ?= $(CURDIR)/.bin
 MANUFACTURE := $(GOBIN)/manufacture
 
-.PHONY: help sync lint fmt typecheck test validate check
+.PHONY: help sync lint fmt typecheck test fakecore validate check
 help: ## list targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*## /\t/'
 
@@ -24,6 +24,14 @@ typecheck: ## mypy --strict
 
 test: ## module unit tests (manufacture.testing, no broker)
 	$(UV) run pytest
+
+HELLO_MODULES := $(foreach m,init hello world exclaim,hello-world/modules/$(m)/main.py)
+
+fakecore: ## Hello World end-to-end on the SDK fake core (in-memory broker; BROKER=amqp for RabbitMQ)
+	$(UV) run mf-fakecore -f hello-world/pipeline.yaml $(HELLO_MODULES) --broker $(or $(BROKER),memory) \
+	  --timeout 60 -o .fakecore-runs.json
+	@$(UV) run python -c 'import json,sys; [r] = json.load(open(".fakecore-runs.json")); \
+	  print(r["status"], r["data"]); sys.exit(r["data"] != {"text": "hello world!"})'
 
 $(MANUFACTURE): versions.env
 	GOBIN=$(GOBIN) go install github.com/t1menar/manufacture-core/cmd/manufacture@$(CORE_REF)

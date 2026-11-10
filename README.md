@@ -36,6 +36,17 @@ make -C hello-world images      # localhost:5001/mf-hello-{init,hello,world,excl
 make -C hello-world manifests   # smoke test of the images
 ```
 
+The whole pipeline end-to-end without the platform, on the SDK fake core
+([SDK ADR 0004](https://github.com/t1menar/manufacture-sdk-python/blob/main/docs/adr/0004-fake-core.md)):
+the real spec and the four real modules, the module protocol over an in-memory broker or a
+real RabbitMQ. Notes: [ADR 0002](docs/adr/0002-fake-core-e2e.md).
+
+```bash
+make fakecore                    # mf-fakecore: waits for the on_start run, prints "hello world!"
+make test                        # includes hello-world/tests/test_fakecore_e2e.py (memory broker)
+make test MF_TEST_AMQP_URL=amqp://guest:guest@127.0.0.1:5672/   # + the same tests over RabbitMQ
+```
+
 Running on a core (`make up`, `mfctl apply -f hello-world/`) arrives with the compose e2e (E2).
 
 ## Development

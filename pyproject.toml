@@ -22,7 +22,7 @@ package = false
 
 [tool.uv.sources]
 # Pinned SDK commit; keep in sync with SDK_REF in versions.env.
-manufacture-sdk = { git = "https://github.com/t1menar/manufacture-sdk-python", rev = "d7caeca7a3a39cb41b76cd118fca91b7e73636bb" }
+manufacture-sdk = { git = "https://github.com/t1menar/manufacture-sdk-python", rev = "0c9af853d1c27f33723eb5aae209ec6758346f68" }
 
 [tool.ruff]
 target-version = "py312"

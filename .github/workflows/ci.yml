@@ -43,6 +43,33 @@ jobs:
       - name: pytest
         run: uv run pytest -v
 
+  fakecore:
+    # Hello World end-to-end on the SDK fake core (no platform): the real spec and modules,
+    # over the in-memory broker and over a real RabbitMQ. See docs/adr/0002-fake-core-e2e.md.
+    runs-on: ubuntu-latest
+    services:
+      rabbitmq:
+        image: rabbitmq:4-management
+        ports: ["5672:5672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q check_port_connectivity"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      MF_TEST_AMQP_URL: amqp://guest:guest@127.0.0.1:5672/
+      MF_AMQP_URL: amqp://guest:guest@127.0.0.1:5672/
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.12"
+      - run: uv sync --locked
+      - name: pytest (memory + RabbitMQ)
+        run: uv run pytest -v hello-world/tests/test_fakecore_e2e.py
+      - name: mf-fakecore (memory)
+        run: make fakecore
+      - name: mf-fakecore (RabbitMQ)
+        run: make fakecore BROKER=amqp
+
   validate:
     # `manufacture validate --strict` from manufacture-core at CORE_REF (versions.env).
     runs-on: ubuntu-latest
