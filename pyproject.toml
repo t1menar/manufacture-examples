@@ -41,24 +41,25 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "hello-world/modules/exclaim/main.py" = ["T201"]  # printing the result is the point
-"**/tests/**" = ["S101", "ANN", "PLR2004", "PLC0415", "TC001", "TC002", "TC003"]
+"e2e/hello_world_e2e.py" = ["T201", "ANN401", "TRY003", "EM101", "EM102", "PLR2004", "N818"]
+"**/tests/**" = ["S101", "ANN", "PLR2004", "PLC0415", "TC001", "TC002", "TC003", "C901", "PLR0911", "PT018"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["modules"]
+known-first-party = ["modules", "e2e"]
 
 [tool.mypy]
 strict = true
 python_version = "3.12"
-files = ["hello-world"]
-mypy_path = "hello-world"
+files = ["hello-world", "e2e"]
+mypy_path = "hello-world:."
 explicit_package_bases = true
 warn_unreachable = true
 plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-testpaths = ["hello-world/tests"]
-pythonpath = ["hello-world"]
+testpaths = ["hello-world/tests", "e2e/tests"]
+pythonpath = ["hello-world", "."]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = ["-ra", "--strict-markers", "--strict-config"]
