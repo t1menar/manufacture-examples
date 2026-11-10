@@ -39,7 +39,7 @@ make -C hello-world manifests   # smoke test of the images
 The whole pipeline end-to-end without the platform, on the SDK fake core
 ([SDK ADR 0004](https://github.com/t1menar/manufacture-sdk-python/blob/main/docs/adr/0004-fake-core.md)):
 the real spec and the four real modules, the module protocol over an in-memory broker or a
-real RabbitMQ. Notes: [ADR 0002](docs/adr/0002-fake-core-e2e.md).
+real RabbitMQ. Notes: [ADR 0003](docs/adr/0003-fake-core-e2e.md).
 
 ```bash
 make fakecore                    # mf-fakecore: waits for the on_start run, prints "hello world!"

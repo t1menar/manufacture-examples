@@ -1,4 +1,4 @@
-# ADR 0002: Hello World end-to-end on the SDK fake core
+# ADR 0003: Hello World end-to-end on the SDK fake core
 
 - Status: proposed
 - Date: 2026-11-10

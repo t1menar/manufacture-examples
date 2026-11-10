@@ -45,7 +45,7 @@ jobs:
 
   fakecore:
     # Hello World end-to-end on the SDK fake core (no platform): the real spec and modules,
-    # over the in-memory broker and over a real RabbitMQ. See docs/adr/0002-fake-core-e2e.md.
+    # over the in-memory broker and over a real RabbitMQ. See docs/adr/0003-fake-core-e2e.md.
     runs-on: ubuntu-latest
     services:
       rabbitmq:
