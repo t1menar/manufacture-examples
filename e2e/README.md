@@ -20,7 +20,7 @@ SDK_REF=<sdk commit> E2E_KEEP=1 e2e/run.sh   # other SDK for the images; keep th
 |---|---|---|
 | postgres | `postgres:17-alpine` | — |
 | rabbitmq | `rabbitmq:4-management` | 5672, 15672 |
-| minio (+ `minio-init`: bucket `mf-blobs`) | `minio/minio` | — |
+| minio (+ `minio-init`: bucket `mf-blobs`) | `cgr.dev/chainguard/minio` (MinIO no longer publishes `minio/minio`), `amazon/aws-cli` | 9000 |
 | registry (module images) | `registry:2` | 5001 |
 | core (profile `core`) | `$CORE_IMAGE` | 8080 |
 

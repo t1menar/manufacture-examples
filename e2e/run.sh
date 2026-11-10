@@ -45,13 +45,14 @@ trap cleanup EXIT
 
 log "infrastructure: postgres, rabbitmq, minio, registry"
 "${COMPOSE[@]}" up -d --wait --wait-timeout "$TIMEOUT" postgres rabbitmq minio registry
-"${COMPOSE[@]}" up --exit-code-from minio-init minio-init >/dev/null
+"${COMPOSE[@]}" up --exit-code-from minio-init minio-init
 
 log "probes"
 "${COMPOSE[@]}" exec -T postgres psql -U mf -d mf -tAc 'select 1' | grep -qx 1
 "${COMPOSE[@]}" exec -T rabbitmq rabbitmq-diagnostics -q check_running
-"${COMPOSE[@]}" run --rm --no-deps --entrypoint /bin/sh minio-init -c \
-  'mc alias set e2e http://minio:9000 mf-e2e mf-e2e-local-only >/dev/null && mc ls e2e/mf-blobs >/dev/null'
+curl -fsS "http://127.0.0.1:${E2E_S3_PORT:-9000}/minio/health/ready" >/dev/null
+"${COMPOSE[@]}" run --rm --no-deps --entrypoint aws minio-init \
+  --endpoint-url http://minio:9000 s3api head-bucket --bucket mf-blobs
 log "infrastructure is healthy (rabbitmq $("${COMPOSE[@]}" exec -T rabbitmq rabbitmqctl -q version))"
 
 log "module images (SDK ${SDK_REF:0:12}) -> localhost:5001"

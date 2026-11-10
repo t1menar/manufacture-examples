@@ -13,7 +13,8 @@ the core's OpenAPI.
 
 ## Decision
 
-- **`e2e/compose.yml`** contains postgres 17, `rabbitmq:4-management`, MinIO with a bucket-init job,
+- **`e2e/compose.yml`** contains postgres 17, `rabbitmq:4-management`, MinIO (`cgr.dev/chainguard/minio`: MinIO stopped publishing
+  `minio/minio` to Docker Hub and Quay) with a bucket-init job (`amazon/aws-cli`),
   and a `registry:2` on `localhost:5001` (the registry the Module specs use). It also has the core in a
   `core` profile, with its image from `CORE_IMAGE`.
 - **`e2e/run.sh`** is the single entry point, used locally and in CI. It reads `versions.env`, and
