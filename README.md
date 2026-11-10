@@ -36,7 +36,9 @@ make -C hello-world images      # localhost:5001/mf-hello-{init,hello,world,excl
 make -C hello-world manifests   # smoke test of the images
 ```
 
-Running on a core (`make up`, `mfctl apply -f hello-world/`) arrives with the compose e2e (E2).
+End to end on docker compose (core + PostgreSQL + RabbitMQ + MinIO): `e2e/run.sh`, see
+[`e2e/README.md`](e2e/README.md). Until manufacture-core publishes a runnable image, it checks
+the infrastructure and the module images only.
 
 ## Development
 

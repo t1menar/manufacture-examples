@@ -4,6 +4,16 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 3 * * *" # nightly e2e against the pinned versions
+  workflow_dispatch:
+    inputs:
+      core_image:
+        description: "Core image for the e2e (default: CORE_IMAGE in versions.env)"
+        required: false
+      sdk_ref:
+        description: "SDK commit for the module images (default: SDK_REF in versions.env)"
+        required: false
 
 permissions:
   contents: read
@@ -64,3 +74,20 @@ jobs:
         run: make -C hello-world images
       - name: smoke
         run: make -C hello-world manifests
+
+  e2e:
+    # Hello World on docker compose (e2e/run.sh). Until manufacture-core publishes a runnable
+    # image (CORE_IMAGE in versions.env is empty) this checks the infrastructure and the module
+    # images only and reports the core part as skipped.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: e2e/run.sh
+        env:
+          CORE_IMAGE: ${{ inputs.core_image || '' }}
+          SDK_REF_OVERRIDE: ${{ inputs.sdk_ref || '' }}
+        run: |
+          if [ -n "$SDK_REF_OVERRIDE" ]; then export SDK_REF="$SDK_REF_OVERRIDE"; fi
+          if [ -z "$CORE_IMAGE" ]; then unset CORE_IMAGE; fi
+          e2e/run.sh
