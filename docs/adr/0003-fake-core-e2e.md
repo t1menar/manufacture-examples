@@ -2,7 +2,7 @@
 
 - Status: proposed
 - Date: 2026-11-10
-- SDK: `manufacture-sdk-python` PR #4 (`manufacture.fakecore`), pinned by commit in `versions.env`
+- SDK: `manufacture-sdk-python` PR #4 (`manufacture.fakecore`), merged as `9faf5b3`; pinned in `versions.env`
 - Contract: 0.2.1
 
 ## Context
@@ -24,9 +24,8 @@ pipeline-level test that runs in every CI build without Docker.
 - Each test runs over the in-memory broker always, and over RabbitMQ when
   `MF_TEST_AMQP_URL` is set. CI job `fakecore` provides a `rabbitmq:4-management` service
   and also runs the CLI (`make fakecore`, `make fakecore BROKER=amqp`).
-- The SDK pin moves to the commit of SDK PR #4. While that PR is not merged this PR stays a
-  **draft**; after the merge the pin is moved to the merge commit on SDK `main` (one commit:
-  `versions.env`, `pyproject.toml`, `uv.lock`, checked by `test_sdk_pin_is_consistent`).
+- The SDK is pinned to the merge commit of SDK PR #4 on SDK `main` (`versions.env`,
+  `pyproject.toml`, `uv.lock`, checked by `test_sdk_pin_is_consistent`).
 
 ## Consequences
 
